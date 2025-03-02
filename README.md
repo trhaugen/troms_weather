@@ -3,6 +3,10 @@
 
 This is a project looking at the weather of Tromsø and the surrounding area to look at how it's changed over the years, how long the data has been collected and how the quality of the data has changed over time. More to come later
 
+## Requirements
+
+This is a python project and needs this modules in addition to python 
+
 
 ## How to use 
 
