@@ -72,6 +72,39 @@ class ReadingData:
         df = pd.DataFrame({'date': c_dates, 'temperature': temperature})
         return df
 
+
+class FindingStations:
+    def __init__(self, client_id: str, client_secret: str):
+        with open (client_id) as f: self.client_id = f.read().strip()
+        with open (client_secret) as f: self.client_secret = f.read().strip()
+
+    def status_code(self, r):
+        if r.status_code == 200:
+            pass
+        else:
+            print('Error! Returned status code %s' % r.status_code)
+            print('Message: %s' % r.json()['error']['message'])
+            print('Reason: %s' % r.json()['error']['reason'])
+            sys.exit()     
+
+    def get_sensors(self, lat: float, lon: float, max_count: int, municipality: str = None):
+        endpoint = 'https://frost.met.no/sources/v0.jsonld'
+        parameters = {
+            'ids': 'SN*',
+            'types': 'SensorSystem',
+            'geometry': f'nearest(POINT({lon} {lat}))',
+            'nearestmaxcount': f'{max_count}',
+        }
+        req = requests.get(endpoint, params=parameters, auth=(self.client_id, ''))
+        self.status_code(req)
+        jreq = req.json()
+        sensors = [
+            [sensor['id'], sensor['name']] for sensor in jreq['data']
+            if municipality is None or sensor.get('municipality') == municipality
+        ]
+        return sensors
+
+
 if __name__ == '__main__':
     station_name = 'SN90610'
     station_name = 'SN90560'
