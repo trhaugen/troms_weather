@@ -6,7 +6,7 @@ import requests
 import sys
 
 class ReadingData:
-    def __init__(self, station_name, client_id, client_secret):
+    def __init__(self, station_name: str, client_id: str, client_secret: str):
         self.station_name = station_name
         with open (client_id) as f: self.client_id = f.read().strip()
         with open (client_secret) as f: self.client_secret = f.read().strip()
@@ -16,17 +16,17 @@ class ReadingData:
     
     def status_code(self, r):
         if r.status_code == 200:
-            print('Success!')
+            pass
         else:
             print('Error! Returned status code %s' % r.status_code)
             print('Message: %s' % r.json()['error']['message'])
             print('Reason: %s' % r.json()['error']['reason'])
             sys.exit()     
 
-    def get_station_age(self):
-        endpoint = 'https://frost.met.no/observations/availableTimeSeries/v0.jsonld'
+    def get_station_info(self):
+        endpoint = 'https://frost.met.no/sources/v0.jsonld'
         parameters = {
-            'sources': self.station_name,
+            'ids': self.station_name,
         }
         req = requests.get(endpoint, parameters, auth=(self.client_id, ''))
         self.status_code(req)
@@ -36,7 +36,9 @@ class ReadingData:
             valid_to = jreq['data'][0]['ValidTo'][:10]
         else:
             valid_to = 'Ongoing'
-        print(f'The station {self.station_name} has data from {valid_from} to {valid_to}')
+        coordinates = jreq['data'][0]['geometry']['coordinates']
+        short_name = jreq['data'][0]['shortName']
+        return valid_from, valid_to, coordinates, short_name
 
     def get_station_datatypes(self):
         endpoint = 'https://frost.met.no/observations/availableTimeSeries/v0.jsonld'
@@ -76,7 +78,7 @@ if __name__ == '__main__':
     client_id = '../ignore_me/client_id.txt'
     client_secret = '../ignore_me/client_secret.txt'
     rd = ReadingData(station_name, client_id, client_secret)
-    rd.get_station_age()
+    rd.get_station_info()
     #print(rd.get_station_datatypes())
 
         
