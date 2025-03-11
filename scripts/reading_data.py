@@ -40,10 +40,11 @@ class ReadingData:
         short_name = jreq['data'][0]['shortName']
         return valid_from, valid_to, coordinates, short_name
 
-    def get_station_datatypes(self):
+    def get_station_datatypes(self, reference_time: str = '2025'):
         endpoint = 'https://frost.met.no/observations/availableTimeSeries/v0.jsonld'
         parameters = {
             'sources': self.station_name,
+            'referencetime': reference_time,
         }
         req = requests.get(endpoint, parameters, auth=(self.client_id, ''))
         self.status_code(req)
@@ -53,6 +54,8 @@ class ReadingData:
     
     def get_temperature_daily(self, start_date: str, end_date: str):
         """
+        Gets the daily mean air temperature for a given time period from the FROST
+        API. Returns a DataFrame with the date and temperature for the given station.
         Parameters:
         start_date (str): Start of time period for gathering data in the format 'YYYY-MM-DD'
         end_date (str): End of time period for gathering data in the format 'YYYY-MM-DD'
@@ -71,7 +74,58 @@ class ReadingData:
         c_dates = [datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ") for date in dates]
         df = pd.DataFrame({'date': c_dates, 'temperature': temperature})
         return df
-
+    
+    def get_temperature_yearly(self, start_year:str, end_year:str):
+        """
+        Gets the yearly mean air temperature anomaly for a given time period 
+        with respect to the period 1961-1990 from the FROST API. Returns a
+        DataFrame with the year and temperature anomaly for the given station.
+        Parameters:
+        start_year (str): Start of time period for gathering data in the format 'YYYY'
+        end_year (str): End of time period for gathering data in the format 'YYYY'
+        """
+        endpoint = 'https://frost.met.no/observations/v0.jsonld'
+        parameters = {
+            'sources': self.station_name,
+            'elements': 'mean(air_temperature P1Y), min(air_temperature P1Y), max(air_temperature P1Y)',
+            'referencetime': f'{start_year}-01-01/{end_year}-12-31',
+        }
+        req = requests.get(endpoint, parameters, auth=(self.client_id, ''))
+        self.status_code(req)
+        jreq = req.json()
+        # Create a DataFrame with the year, min, max and mean temperature
+        df = pd.DataFrame([{
+            'year': datetime.datetime.strptime(entry['referenceTime'], "%Y-%m-%dT%H:%M:%S.%fZ").year,
+            'min': next((obs.get('value') for obs in entry['observations'] if obs.get('elementId') == 'min(air_temperature P1Y)'), None),
+            'max': next((obs.get('value') for obs in entry['observations'] if obs.get('elementId') == 'max(air_temperature P1Y)'), None),
+            'mean': next((obs.get('value') for obs in entry['observations'] if obs.get('elementId') == 'mean(air_temperature P1Y)'), None)
+        } for entry in jreq['data']])
+        # Group by year and create new columns for min, max and mean, adding NaN where no data is available
+        df = df.groupby('year', as_index=False).agg({
+            'min': 'min',
+            'max': 'max',
+            'mean': 'mean'})
+        return df
+    
+    def get_temperature_anomaly(self, start_year:str, end_year:str):
+        endpoint = 'https://frost.met.no/observations/v0.jsonld'
+        parameters = {
+            'sources': self.station_name,
+            'elements': 'mean(air_temperature_anomaly P3M 1961_1990)',
+            'referencetime': f'{start_year}-01-01/{end_year}-12-31',
+        }
+        req = requests.get(endpoint, parameters, auth=(self.client_id, ''))
+        self.status_code(req)
+        jreq = req.json()
+        # Create a DataFrame with the year and quatertly temperature anomaly
+        df = pd.DataFrame([{
+            'year': datetime.datetime.strptime(entry['referenceTime'], "%Y-%m-%dT%H:%M:%S.%fZ").year,
+            'month': datetime.datetime.strptime(entry['referenceTime'], "%Y-%m-%dT%H:%M:%S.%fZ").month,
+            'anomaly': next((obs.get('value') for obs in entry['observations'] 
+                             if obs.get('elementId') == 'mean(air_temperature_anomaly P3M 1961_1990)'), None)
+        } for entry in jreq['data']])
+        df["year_month"] = df["year"].astype(str) + "-" + df["month"].astype(str).str.zfill(2) 
+        return df
 
 class FindingStations:
     def __init__(self, client_id: str, client_secret: str):
@@ -106,12 +160,12 @@ class FindingStations:
 
 
 if __name__ == '__main__':
-    station_name = 'SN90610'
     station_name = 'SN90560'
     client_id = '../ignore_me/client_id.txt'
     client_secret = '../ignore_me/client_secret.txt'
     rd = ReadingData(station_name, client_id, client_secret)
-    rd.get_station_info()
+    print(rd.get_station_info())
+    print(rd.get_temperature_anomaly('1920', '2020'))
     #print(rd.get_station_datatypes())
 
         
