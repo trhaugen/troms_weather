@@ -28,7 +28,6 @@ You can now run all the scripts and files in the scrips folder
 
 ## Authors
 
-- [@octokatherine](https://www.github.com/octokatherine)
 
 
 ## Contributing
