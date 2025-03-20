@@ -16,9 +16,9 @@ To set up the environment, you need to have [Anaconda](https://www.anaconda.com/
 Run the following command in your terminal to create the conda environment where it will be named **troms_weather**:
 ```
 conda env create -f environment.yml
-````
+```
 Activate said environment with the code:
-````
+```
 conda activate troms_weather
 ```
 
