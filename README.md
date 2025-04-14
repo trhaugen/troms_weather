@@ -76,6 +76,22 @@ Newspaper from 1975 is from the national library in Norway.
 
 Contributions are always welcome, big and small. If you have any suggestions for further use and development they are also welcome. 
 
+## How to cite
+
+If you use this project in your research or publication, please cite it as:
+
+@misc{tromsweather,
+  author       = {Tonje R. Haugen},
+  title        = {Weather trends in Tromsø region},
+  year         = {2025},
+  url          = {https://github.com/trhaugen/troms_weather},
+  note         = {GitHub repository}
+}
+
+Alternatively, mention the repository link directly in your work:
+
+    Haugen, T.R. Weather trend in Tromsø. GitHub, 2025. Available at: https://github.com/trhaugen/troms_weather
+
 ## License
 
 [GNU GPLv3 ](https://choosealicense.com/licenses/gpl-3.0/)
