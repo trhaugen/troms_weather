@@ -31,6 +31,7 @@ When all this is done, you can now run the scripts in this project.
 ## Overview 
 
 This project is in several folders and organized in this manner:
+<pre>'''
 .
 ├── LICENSE
 ├── README.md
@@ -49,6 +50,7 @@ This project is in several folders and organized in this manner:
 │   ├── main_project.ipynb
 │   ├── reading_data.py
 │   └── supporting_information.ipynb
+''' </pre>
 
 'client_files' should contain two files called 'client_id.txt' and client_secret.txt' with information given in the installation section. 
 'data' includes data needed to make certain plots and figures in addition to the gathered data from the FROST API.
