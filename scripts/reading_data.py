@@ -28,12 +28,13 @@ class ReadingData:
             r (requests.models.Response): The response object from the request.
         """
         if r.status_code == 200:
-            pass
-        else:
-            print('Error! Returned status code %s' % r.status_code)
-            print('Message: %s' % r.json()['error']['message'])
-            print('Reason: %s' % r.json()['error']['reason'])
-            sys.exit()     
+            return  # Request was successful, do nothing
+        
+        # Extract error message details
+        error_message = r.json().get('error', {}).get('message', 'Unknown error')
+        error_reason = r.json().get('error', {}).get('reason', 'No reason provided')
+
+        raise ValueError(f"Error {r.status_code}: {error_message} - {error_reason}")
 
     def get_station_info(self) -> tuple:
         """
@@ -179,6 +180,31 @@ class ReadingData:
         } for entry in jreq['data']])
         df["year_month"] = df["year"].astype(str) + "-" + df["month"].astype(str).str.zfill(2) 
         return df
+    
+    def get_daily_max_wind(self, start_date:str, end_date:str) -> pd.DataFrame:
+        """
+        Gets the daily maximum wind speed for a given time period from the FROST API with the unit m/s.
+        Args:
+            start_date (str): Start of time period for gathering data in the format 'YYYY-MM-DD'
+            end_date (str): End of time period for gathering data in the format 'YYYY-MM-DD'
+        Returns:
+            pd.DataFrame: DataFrame with the date and daily maximum wind speed for given timeperiod.
+        """
+        endpoint = 'https://frost.met.no/observations/v0.jsonld'
+        parameters = {
+            'sources': self.station_name,
+            'elements': 'max(wind_speed P1D)',
+            'referencetime': f'{start_date}/{end_date}',
+        }
+        req = requests.get(endpoint, parameters, auth=(self.client_id, ''))
+        self.status_code(req)
+        jreq = req.json()
+        df = pd.DataFrame([{
+            'date': datetime.datetime.strptime(entry['referenceTime'], "%Y-%m-%dT%H:%M:%S.%fZ"),
+            'max_wind_speed': next((obs.get('value') for obs in entry['observations'] 
+                                    if obs.get('elementId') == 'max(wind_speed P1D)'), None)
+        } for entry in jreq['data']])
+        return df
 
 class FindingStations:
     def __init__(self, client_id: str, client_secret: str):
@@ -233,13 +259,13 @@ class FindingStations:
 
 
 if __name__ == '__main__':
-    station_name = 'SN90560'
-    client_id = '../ignore_me/client_id.txt'
-    client_secret = '../ignore_me/client_secret.txt'
+    # Example usage of one of the functions
+    station_name = 'SN90450'
+    client_id = '../client_files/client_id.txt'
+    client_secret = '../client_files/client_secret.txt'
     rd = ReadingData(station_name, client_id, client_secret)
-    print(rd.get_station_info())
-    print(rd.get_temperature_anomaly('1920', '2020'))
-    #print(rd.get_station_datatypes())
+    print(rd.get_daily_max_wind('2021-01-01', '2021-01-31'))
+    
 
         
 
