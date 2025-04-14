@@ -79,7 +79,7 @@ Contributions are always welcome, big and small. If you have any suggestions for
 ## How to cite
 
 If you use this project in your research or publication, please cite it as:
-
+'''
 @misc{tromsweather,
   author       = {Tonje R. Haugen},
   title        = {Weather trends in Tromsø region},
@@ -87,7 +87,7 @@ If you use this project in your research or publication, please cite it as:
   url          = {https://github.com/trhaugen/troms_weather},
   note         = {GitHub repository}
 }
-
+'''
 Alternatively, mention the repository link directly in your work:
 
     Haugen, T.R. Weather trend in Tromsø. GitHub, 2025. Available at: https://github.com/trhaugen/troms_weather
