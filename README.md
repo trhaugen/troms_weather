@@ -50,7 +50,7 @@ This project is in several folders and organized in this manner:
 │   ├── main_project.ipynb
 │   ├── reading_data.py
 │   └── supporting_information.ipynb
-''' </pre>
+ </pre>
 
 'client_files' should contain two files called 'client_id.txt' and client_secret.txt' with information given in the installation section. 
 'data' includes data needed to make certain plots and figures in addition to the gathered data from the FROST API.
@@ -79,7 +79,8 @@ Contributions are always welcome, big and small. If you have any suggestions for
 ## How to cite
 
 If you use this project in your research or publication, please cite it as:
-'''
+
+'''bibtex
 @misc{tromsweather,
   author       = {Tonje R. Haugen},
   title        = {Weather trends in Tromsø region},
@@ -87,7 +88,8 @@ If you use this project in your research or publication, please cite it as:
   url          = {https://github.com/trhaugen/troms_weather},
   note         = {GitHub repository}
 }
-'''
+
+
 Alternatively, mention the repository link directly in your work:
 
     Haugen, T.R. Weather trend in Tromsø. GitHub, 2025. Available at: https://github.com/trhaugen/troms_weather
