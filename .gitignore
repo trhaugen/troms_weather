@@ -1,2 +1,3 @@
-client_files/*
+client_files/client_id.txt
+client_files/client_secret.txt
 test_files/

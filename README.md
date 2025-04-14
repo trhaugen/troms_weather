@@ -64,9 +64,9 @@ This project is in several folders and organized in this manner:
 
 ## Sources 
 
-Geojson of Norway found in 'data' is gathered from [fylker-og-kommuner](https://github.com/robhop/fylker-og-kommuner) github.
-Basisdata found in 'data' is gathered from [Kartkatalog Norge](https://kartkatalog.geonorge.no/)
-Newspaper from 1975 is from the national library in Norway. 
+Geojson of Norway found in 'data' is gathered from [fylker-og-kommuner](https://github.com/robhop/fylker-og-kommuner) github.  
+Basisdata found in 'data' is gathered from [Kartkatalog Norge](https://kartkatalog.geonorge.no/).  
+Newspaper from 1975 is from the national library in Norway.   
 
 ## Authors
 
