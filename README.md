@@ -88,7 +88,7 @@ If you use this project in your research or publication, please cite it as:
   url          = {https://github.com/trhaugen/troms_weather},
   note         = {GitHub repository}
 }
-
+```
 
 Alternatively, mention the repository link directly in your work:
 
