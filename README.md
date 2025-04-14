@@ -31,7 +31,7 @@ When all this is done, you can now run the scripts in this project.
 ## Overview 
 
 This project is in several folders and organized in this manner:
-<pre>'''
+<pre>```
 .
 ├── LICENSE
 ├── README.md
@@ -80,7 +80,7 @@ Contributions are always welcome, big and small. If you have any suggestions for
 
 If you use this project in your research or publication, please cite it as:
 
-'''bibtex
+```bibtex
 @misc{tromsweather,
   author       = {Tonje R. Haugen},
   title        = {Weather trends in Tromsø region},
